@@ -5,14 +5,12 @@
 //
 
 function b32
-Win32SubmitAudio(THIS_WOULD_BE_THE_4CODER_HANDLE *Handle, HWAVEOUT WaveOut, WAVEHDR *Header)
+Win32SubmitAudio(CrunkAudio *Crunky, HWAVEOUT WaveOut, WAVEHDR *Header, u32 SampleCount, void *MixBuffer)
 {
     b32 Result = false;
 
-    u32 SampleCount = Header->dwBufferLength/4;
     i16 *Samples = (i16 *)Header->lpData;
-    
-    THIS_IS_THE_MIXER_FUNCTION_THAT_WOULD_BE_PLATFORM_INDEPENDENT(Handle, SampleCount, Samples);
+    F4_MixAudio(Crunky, SampleCount, Samples, MixBuffer);
 
     DWORD Error = waveOutPrepareHeader(WaveOut, Header, sizeof(*Header));
     if(Error == MMSYSERR_NOERROR)
@@ -31,7 +29,7 @@ Win32SubmitAudio(THIS_WOULD_BE_THE_4CODER_HANDLE *Handle, HWAVEOUT WaveOut, WAVE
 function DWORD WINAPI
 Win32AudioLoop(void *Passthrough)
 {
-    THIS_WOULD_BE_THE_4CODER_HANDLE *Handle = (THIS_WOULD_BE_THE_4CODER_HANDLE *)Passthrough;
+    CrunkAudio *Crunky = (CrunkAudio *)Passthrough;
 
     //
     // NOTE(casey): Set up our audio output buffer
@@ -46,7 +44,8 @@ Win32AudioLoop(void *Passthrough)
     u32 BufferSize = SamplesPerBuffer*BytesPerSample;
     u32 HeaderSize = sizeof(WAVEHDR);
     u32 TotalBufferSize = (BufferSize+HeaderSize);
-    u32 TotalAudioMemorySize = BufferCount*TotalBufferSize;
+    u32 MixBufferSize = (SamplesPerBuffer*ChannelCount*sizeof(f32));
+    u32 TotalAudioMemorySize = BufferCount*TotalBufferSize + MixBufferSize;
 
     //
     // NOTE(casey): Initialize audio out
@@ -61,41 +60,46 @@ Win32AudioLoop(void *Passthrough)
     Format.nBlockAlign = (Format.nChannels*Format.wBitsPerSample)/8;
     Format.nAvgBytesPerSec = Format.nBlockAlign * Format.nSamplesPerSec;
 
+    void *MixBuffer = 0;
+    void *AudioBufferMemory = 0;
     if(waveOutOpen(&WaveOut, WAVE_MAPPER, &Format, GetCurrentThreadId(), 0, CALLBACK_THREAD) == MMSYSERR_NOERROR)
     {
-        void *AudioBufferMemory = VirtualAlloc(0, TotalAudioMemorySize, MEM_COMMIT, PAGE_READWRITE);
+        AudioBufferMemory = VirtualAlloc(0, TotalAudioMemorySize, MEM_COMMIT, PAGE_READWRITE);
         if(AudioBufferMemory)
         {
             u8 *At = (u8 *)AudioBufferMemory;
+			MixBuffer = At;
+            At += MixBufferSize;
+            
             for(u32 BufferIndex = 0;
                 BufferIndex < BufferCount;
                 ++BufferIndex)
             {
                 WAVEHDR *Header = (WAVEHDR *)At;
-                At += sizeof(WAVEHDR);
-                Header->lpData = (char *)At;
-                Header->dwBufferLength = TotalBufferSize;
+                Header->lpData = (char *)(Header + 1);
+                Header->dwBufferLength = BufferSize;
 
                 At += TotalBufferSize;
 
-                Win32SubmitAudio(Handle, WaveOut, Header);
+                Win32SubmitAudio(Crunky, WaveOut, Header, SamplesPerBuffer, MixBuffer);
             }
         }
         else
         {
-            // TODO(casey): Report the error here, if you want
+            Crunky->Quit = true;
         }
     }
     else
     {
-        // TODO(casey): Report the error here, if you want
+        Crunky->Quit = true;
     }
 
     //
     // NOTE(casey): Serve audio forever (until we are told to stop)
     //
-    // SetTimer(0, 0, 100, 0);
-    while(!Handle->Quit)
+    
+    SetTimer(0, 0, 100, 0);
+    while(!Crunky->Quit)
     {
         MSG Message = {};
         GetMessage(&Message, 0, 0, 0);
@@ -109,8 +113,18 @@ Win32AudioLoop(void *Passthrough)
 
             waveOutUnprepareHeader(WaveOut, Header, sizeof(*Header));
 
-            Win32SubmitAudio(Handle, WaveOut, Header);
+            Win32SubmitAudio(Crunky, WaveOut, Header, SamplesPerBuffer, MixBuffer);
         }
+    }
+    
+    if(WaveOut)
+    {
+        waveOutClose(WaveOut);
+    }
+    
+    if(AudioBufferMemory)
+    {
+        VirtualFree(AudioBufferMemory, 0, MEM_RELEASE);
     }
 
     return(0);
