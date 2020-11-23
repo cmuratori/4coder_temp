@@ -83,19 +83,19 @@ Win32AudioLoop(void *Passthrough)
         }
         else
         {
-            Crunky->Quit = true;
+            // TODO(casey): Report the error here, if you want
         }
     }
     else
     {
-        Crunky->Quit = true;
+        // TODO(casey): Report the error here, if you want
     }
 
     //
     // NOTE(casey): Serve audio forever (until we are told to stop)
     //
     // SetTimer(0, 0, 100, 0);
-    while(!Crunky->Quit)
+    while(!Handle->Quit)
     {
         MSG Message = {};
         GetMessage(&Message, 0, 0, 0);
