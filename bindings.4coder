@@ -1,0 +1,157 @@
+keys_global =
+{
+	{ "write_text_input", "Tick", "Shift"},
+	{ "casey_switch_to_keybinding_0", "Tick" },
+	{ "casey_switch_to_keybinding_1", "Escape" },
+
+	{ "exit_4coder",                              "F4",     "Alt"                      },
+
+	{ "project_fkey_command",                     "F1"                                 },
+    { "project_fkey_command",                     "F2"                                 },
+    { "project_fkey_command",                     "F3"                                 },
+    { "project_fkey_command",                     "F4"                                 },
+
+    { "command_lister",                           "F5"                                 },
+    { "project_command_lister",                   "F6"                                 },
+    { "project_fkey_command",                     "F7"                                 },
+    { "fleury_toggle_power_mode",                 "F8"                                 },
+
+    { "project_fkey_command",                     "F9"                                 },
+    { "project_fkey_command",                     "F10"                                },
+    { "project_fkey_command",                     "F11"                                },
+    { "project_fkey_command",                     "F12"                                },
+    { "project_fkey_command",                     "F13"                                },
+    { "project_fkey_command",                     "F14"                                },
+    { "project_fkey_command",                     "F15"                                },
+    { "project_fkey_command",                     "F16"                                },
+};
+
+keys_global_1 =
+{
+    { "change_active_panel", "ForwardSlash" },
+};
+
+keys_file =
+{
+    { "word_complete", "Tab" },
+
+    //
+    // NOTE(casey): Movement
+    //
+
+	{ "move_up", "Up" },
+	{ "move_down", "Down" },
+	{ "move_left", "Left" },
+	{ "move_right", "Right" },
+
+	{ "casey_seek_beginning_of_line_and_tab", "Home" },
+	{ "seek_end_of_line", "End" },
+
+	{ "move_up_to_blank_line_end", "PageUp" },
+	{ "move_down_to_blank_line_end", "PageDown" },
+
+	{ "backspace_char", "Backspace" },
+	{ "delete_char", "Delete" },
+
+	{ "casey_newline_and_indent", "Return" },
+};
+
+keys_file_1 =
+{
+	//
+	// NOTE(casey): Special
+	//
+
+	{ "set_mark", "Space" },
+	{ "casey_clean_file_and_save", "BackwardSlash" },
+    { "auto_indent_range", "T" },
+
+	//
+	// NOTE(casey): Movement
+	//
+
+	{ "move_left_whitespace_or_token_boundary", "Left" },
+	{ "move_right_whitespace_or_token_boundary", "Right" },
+
+	{ "fleury_home", "Home" },
+	{ "seek_end_of_line", "End" },
+
+	{ "page_up", "PageUp" },
+	{ "page_down", "PageDown" },
+
+	{ "backspace_alpha_numeric_boundary", "Backspace" },
+	{ "delete_alpha_numeric_boundary", "Delete" },
+
+/*
+#if 0
+Bindings[Minus] = Bind(MarkPrevLocation, "Move to the previous major view/edit location.");
+Bindings[Equals] = Bind(MarkNextLocation, "Move to the next major view/edit location.");
+#endif
+*/
+
+	//
+    // NOTE(casey): History control
+    //
+
+	{ "undo", "U" },
+	{ "redo", "Y" },
+
+	//
+	// NOTE(casey): Jump control
+	//
+
+	{ "search", "P" },
+	{ "reverse_search", "O" },
+	{ "goto_prev_jump", "LeftBracket" },
+	{ "goto_next_jump", "RightBracket" },
+
+	{ "goto_line", "G" },
+
+    { "list_all_locations_case_insensitive", "K" },
+    { "interactive_switch_buffer", "B" },
+    { "view_buffer_other_panel", "X" },
+    { "interactive_open_or_new", "N" },
+    { "casey_find_matching_file", "C" },
+
+    //
+    // NOTE(casey): Exec control
+    //
+
+    { "build_in_build_panel", "M" },
+
+    { "goto_prev_jump", "Comma" },
+    { "goto_next_jump", "Period" },
+
+    //
+    // NOTE(casey): Clipboard
+    //
+
+    { "copy", "Q" },
+	{ "cut", "W" },
+
+/*
+DEFINE_MODAL_KEY(KeyCode_E, swap);
+DEFINE_MODAL_KEY(KeyCode_R, replace);
+DEFINE_MODAL_KEY(KeyCode_A, casey_expand_region_to_full_lines);
+DEFINE_MODAL_KEY(KeyCode_Insert, casey_toggle_listing_height);
+*/
+
+    { "casey_delete_to_end_of_line", "D" },
+	{ "paste_and_indent", "F" },
+};
+
+keys_code =
+{
+1
+};
+
+keys_code_1 =
+{
+    { "jump_to_definition", "J" },
+// DEFINE_MODAL_KEY(KeyCode_S, casey_expand_region_to_enclosing_scope);
+
+	// { "fleury_code_peek", "L" },
+	// { "fleury_close_code_peek", "Semicolon" },
+	{ "casey_go_to_code_peek", "Quote" },
+	// { "fleury_code_peek_go_same_panel", "" },
+};
